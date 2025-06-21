@@ -4,15 +4,13 @@ import {
   View, 
   Text, 
   StyleSheet, 
-  TouchableOpacity,
   Image,
   Animated,
   Modal,
   ScrollView,
   Switch,
   Platform,
-  TouchableWithoutFeedback,
-  UIManager
+  Pressable
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
@@ -35,27 +33,17 @@ export default function App() {
   const nextIdRef = useRef(0);
   const autoPlayIntervalRef = useRef(null);
   
-  // 禁用系統聲音 - Android
-  useEffect(() => {
-    if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-      UIManager.setLayoutAnimationEnabledExperimental(false);
-    }
-  }, []);
-
-  // 自定義無聲按鈕組件 - 完全禁用聲音
+  // 自定義無聲按鈕組件 - 使用Pressable完全禁用聲音
   const SilentButton = ({ children, onPress, style }) => {
     return (
-      <View style={style}>
-        <TouchableWithoutFeedback 
-          onPress={onPress}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          pressRetentionOffset={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            {children}
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+      <Pressable 
+        onPress={onPress}
+        style={style}
+        android_disableSound={true}
+        android_ripple={null}
+      >
+        {children}
+      </Pressable>
     );
   };
 
