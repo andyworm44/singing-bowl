@@ -1,50 +1,104 @@
-# Welcome to your Expo app 👋
+# 每日靜心頌缽應用 🎌
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+一個基於 React Native 和 Expo 的冥想頌缽應用，幫助用戶進行每日靜心修行。
 
-## Get started
+## ✨ 功能特色
 
-1. Install dependencies
+- 🎵 **頌缽敲擊** - 點擊頌缽播放真實的頌缽聲音
+- ⚡ **連續敲擊** - 支持快速連續敲擊，每次敲擊都有聲音反饋
+- 📊 **慈悲心統計** - 記錄每日敲擊次數，追蹤修行進度
+- 🤖 **自動敲擊** - 可開啟自動敲擊模式，每5秒自動播放一次
+- ✨ **浮動效果** - 每次敲擊顯示"慈悲心 +1"浮動文字
+- 💾 **數據持久化** - 統計數據本地存儲，不會丟失
+- 🌙 **深色主題** - 優雅的深色界面設計
 
+## 📱 界面設計
+
+- **主界面**: 金色頌缽圖像，支持點擊敲擊
+- **統計界面**: 查看今日修行記錄
+- **設定界面**: 開啟/關閉自動敲擊功能
+- **浮動文字**: 敲擊時在頌缽上方顯示慈悲心增加提示
+
+## 🚀 技術棧
+
+- **React Native** - 跨平台移動應用框架
+- **Expo** - 開發和部署工具
+- **Expo AV** - 音頻播放功能
+- **AsyncStorage** - 本地數據存儲
+- **React Native Animated** - 動畫效果
+
+## 📦 安裝與運行
+
+1. 確保已安裝 Node.js 和 npm
+2. 克隆項目到本地
+3. 安裝依賴：
    ```bash
    npm install
    ```
-
-2. Start the app
-
+4. 啟動開發服務器：
    ```bash
    npx expo start
    ```
+5. 使用 Expo Go 應用掃描 QR 碼在手機上運行
 
-In the output, you'll find options to open the app in a
+## 🎯 使用方法
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. **手動敲擊**: 點擊頌缽圖像即可播放聲音並增加慈悲心計數
+2. **查看統計**: 點擊右上角統計圖標查看今日修行記錄
+3. **自動敲擊**: 點擊左上角設定圖標，開啟自動敲擊功能
+4. **連續敲擊**: 支持快速連續點擊，每次都會播放聲音
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📊 數據統計
 
-## Get a fresh project
+- 記錄每日敲擊次數
+- 數據按日期分類存儲
+- 支持查看歷史記錄
+- 數據本地持久化保存
 
-When you're ready, run:
+## 🔧 項目結構
 
-```bash
-npm run reset-project
+```
+singing-bowl/
+├── app/
+│   ├── index.js          # 主應用組件
+│   └── utils/
+│       └── stats.js      # 統計工具函數
+├── assets/
+│   ├── bowl.png          # 頌缽圖像
+│   └── bowl-sound.mp3    # 頌缽音效
+├── utils/
+│   └── meditationStats.js # 冥想統計功能
+└── components/           # 其他組件
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🎨 設計理念
 
-## Learn more
+這個應用旨在提供一個簡潔、專注的冥想體驗：
 
-To learn more about developing your project with Expo, look at the following resources:
+- **簡約設計**: 深色背景突出金色頌缽，營造寧靜氛圍
+- **直觀操作**: 點擊即可使用，無需複雜設定
+- **即時反饋**: 聲音、視覺效果和數據更新的即時響應
+- **習慣養成**: 通過統計功能鼓勵每日修行
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 📝 版本歷史
 
-## Join the community
+### v1.0.0 (2025-06-21)
+- ✅ 初始版本發布
+- ✅ 實現頌缽敲擊功能
+- ✅ 添加慈悲心統計
+- ✅ 實現自動敲擊功能
+- ✅ 浮動文字效果
+- ✅ 數據持久化存儲
+- ✅ 響應式UI設計
 
-Join our community of developers creating universal apps.
+## 🤝 貢獻
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+歡迎提交 Issue 和 Pull Request 來改進這個應用！
+
+## 📄 許可證
+
+MIT License
+
+---
+
+*願每一次頌缽聲響都能帶來內心的平靜與慈悲 🙏*
