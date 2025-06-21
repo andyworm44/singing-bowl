@@ -10,7 +10,7 @@ import {
   ScrollView,
   Switch,
   Platform,
-  Pressable
+  TouchableWithoutFeedback
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
@@ -33,17 +33,37 @@ export default function App() {
   const nextIdRef = useRef(0);
   const autoPlayIntervalRef = useRef(null);
   
-  // 自定義無聲按鈕組件 - 使用Pressable完全禁用聲音
+  // 添加頌缽動畫的 Animated.Value
+  const bowlScale = useRef(new Animated.Value(1)).current;
+  
+  // 頌缽動畫函數
+  const animateBowl = () => {
+    // 重置動畫值
+    bowlScale.setValue(1);
+    
+    // 創建放大再縮小的動畫
+    Animated.sequence([
+      Animated.timing(bowlScale, {
+        toValue: 1.2, // 放大到 1.2 倍
+        duration: 150, // 150ms 放大
+        useNativeDriver: true,
+      }),
+      Animated.timing(bowlScale, {
+        toValue: 1, // 縮回原始大小
+        duration: 300, // 300ms 縮小
+        useNativeDriver: true,
+      })
+    ]).start();
+  };
+  
+  // 自定義無聲按鈕組件 - 使用TouchableWithoutFeedback避免任何視覺效果
   const SilentButton = ({ children, onPress, style }) => {
     return (
-      <Pressable 
-        onPress={onPress}
-        style={style}
-        android_disableSound={true}
-        android_ripple={null}
-      >
-        {children}
-      </Pressable>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View style={style}>
+          {children}
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -106,6 +126,7 @@ export default function App() {
   // 自動敲擊處理函數
   const handleAutoPlay = async () => {
     console.log('Auto play triggered');
+    animateBowl(); // 添加動畫效果
     await playSound();
     await handleIncrementStat(200, 350); // 使用送缽正上方位置
   };
@@ -115,19 +136,13 @@ export default function App() {
     const initializeAudio = async () => {
       try {
         // 簡化音頻設定，避免Android錯誤
-        const audioConfig = {
+        await Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
           staysActiveInBackground: false,
           playsInSilentModeIOS: true,
-        };
-        
-        // 只在iOS上添加Android特定設定
-        if (Platform.OS === 'android') {
-          audioConfig.shouldDuckAndroid = false;
-          audioConfig.playThroughEarpieceAndroid = false;
-        }
-        
-        await Audio.setAudioModeAsync(audioConfig);
+          shouldDuckAndroid: false,
+          playThroughEarpieceAndroid: false,
+        });
 
         const { sound } = await Audio.Sound.createAsync(
           require('../assets/bowl-sound.mp3'),
@@ -194,16 +209,21 @@ export default function App() {
   };
 
   // 處理敲擊
-  const handlePress = async (event) => {
+  const handlePress = async () => {
     const currentTime = Date.now();
     if (currentTime - lastTapTime < COOLDOWN_TIME) {
       return;
     }
     setLastTapTime(currentTime);
 
-    const { locationX: x, locationY: y } = event.nativeEvent;
+    // 觸發頌缽動畫
+    animateBowl();
+    
+    // 播放聲音
     await playSound();
-    await handleIncrementStat(x, y);
+    
+    // 增加統計數據並顯示浮動文字 - 使用固定位置（頌缽上方）
+    await handleIncrementStat(200, 350);
   };
 
   // 處理浮動文字完成動畫 - 移到組件外部避免 useCallback 問題
@@ -284,15 +304,19 @@ export default function App() {
       </SilentButton>
       
       {/* 缽圖像 */}
-      <SilentButton 
-        onPress={handlePress}
-        style={styles.bowlContainer}
-      >
-        <Image 
-          source={require('../assets/bowl.png')} 
-          style={styles.bowlImage} 
-        />
-      </SilentButton>
+      <TouchableWithoutFeedback onPress={handlePress}>
+        <View style={styles.bowlContainer}>
+          <Animated.Image 
+            source={require('../assets/bowl.png')} 
+            style={[
+              styles.bowlImage,
+              {
+                transform: [{ scale: bowlScale }]
+              }
+            ]} 
+          />
+        </View>
+      </TouchableWithoutFeedback>
 
       {/* 浮動文字 */}
       {floatingTexts.map(({ id, message, startPosition }) => (
@@ -397,7 +421,7 @@ const styles = StyleSheet.create({
   },
   floatingText: {
     position: 'absolute',
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   settingsButton: {
