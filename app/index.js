@@ -14,7 +14,6 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { incrementStat, getTodayStats } from '../utils/meditationStats';
-import SplashScreen from '../components/SplashScreen';
 
 const MESSAGES = [
   { text: '慈悲心 +1', color: 'white' }
@@ -29,7 +28,6 @@ export default function App() {
   const [todayStats, setTodayStats] = useState({});
   const [autoPlay, setAutoPlay] = useState(false);
   const [lastTapTime, setLastTapTime] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const soundRef = useRef(null);
   const nextIdRef = useRef(0);
   const autoPlayIntervalRef = useRef(null);
@@ -118,11 +116,6 @@ export default function App() {
 
     initializeAudio();
     loadTodayStats();
-    
-    // 模擬 loading 時間
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
 
     return () => {
       if (soundRef.current) {
@@ -237,11 +230,6 @@ export default function App() {
       </Animated.Text>
     );
   };
-
-  // 顯示 loading 畫面
-  if (isLoading) {
-    return <SplashScreen />;
-  }
 
   return (
     <View style={styles.container}>
