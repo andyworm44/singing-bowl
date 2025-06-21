@@ -11,7 +11,8 @@ import {
   ScrollView,
   Switch,
   Platform,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  UIManager
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
@@ -33,6 +34,30 @@ export default function App() {
   const soundRef = useRef(null);
   const nextIdRef = useRef(0);
   const autoPlayIntervalRef = useRef(null);
+  
+  // 禁用系統聲音 - Android
+  useEffect(() => {
+    if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+      UIManager.setLayoutAnimationEnabledExperimental(false);
+    }
+  }, []);
+
+  // 自定義無聲按鈕組件 - 完全禁用聲音
+  const SilentButton = ({ children, onPress, style }) => {
+    return (
+      <View style={style}>
+        <TouchableWithoutFeedback 
+          onPress={onPress}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          pressRetentionOffset={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {children}
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    );
+  };
 
   // 播放聲音 - 改進版本支持重疊播放
   const playSound = async () => {
@@ -101,13 +126,20 @@ export default function App() {
   useEffect(() => {
     const initializeAudio = async () => {
       try {
-        await Audio.setAudioModeAsync({
+        // 簡化音頻設定，避免Android錯誤
+        const audioConfig = {
           allowsRecordingIOS: false,
           staysActiveInBackground: false,
           playsInSilentModeIOS: true,
-          shouldDuckAndroid: false,
-          playThroughEarpieceAndroid: false,
-        });
+        };
+        
+        // 只在iOS上添加Android特定設定
+        if (Platform.OS === 'android') {
+          audioConfig.shouldDuckAndroid = false;
+          audioConfig.playThroughEarpieceAndroid = false;
+        }
+        
+        await Audio.setAudioModeAsync(audioConfig);
 
         const { sound } = await Audio.Sound.createAsync(
           require('../assets/bowl-sound.mp3'),
@@ -248,28 +280,31 @@ export default function App() {
       <Text style={styles.title}>每日靜心</Text>
       
       {/* 設定按鈕 */}
-      <TouchableWithoutFeedback onPress={() => setShowSettings(true)}>
-        <View style={styles.settingsButton}>
-          <Ionicons name="settings-outline" size={24} color="#D4AF37" />
-        </View>
-      </TouchableWithoutFeedback>
+      <SilentButton 
+        onPress={() => setShowSettings(true)}
+        style={styles.settingsButton}
+      >
+        <Ionicons name="settings-outline" size={24} color="#D4AF37" />
+      </SilentButton>
       
       {/* 統計按鈕 */}
-      <TouchableWithoutFeedback onPress={() => setShowStats(true)}>
-        <View style={styles.statsButton}>
-          <Ionicons name="stats-chart" size={24} color="#D4AF37" />
-        </View>
-      </TouchableWithoutFeedback>
+      <SilentButton 
+        onPress={() => setShowStats(true)}
+        style={styles.statsButton}
+      >
+        <Ionicons name="stats-chart" size={24} color="#D4AF37" />
+      </SilentButton>
       
       {/* 缽圖像 */}
-      <TouchableWithoutFeedback onPress={handlePress}>
-        <View style={styles.bowlContainer}>
-          <Image 
-            source={require('../assets/bowl.png')} 
-            style={styles.bowlImage} 
-          />
-        </View>
-      </TouchableWithoutFeedback>
+      <SilentButton 
+        onPress={handlePress}
+        style={styles.bowlContainer}
+      >
+        <Image 
+          source={require('../assets/bowl.png')} 
+          style={styles.bowlImage} 
+        />
+      </SilentButton>
 
       {/* 浮動文字 */}
       {floatingTexts.map(({ id, message, startPosition }) => (
@@ -292,11 +327,9 @@ export default function App() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>今日修行</Text>
-              <TouchableWithoutFeedback onPress={() => setShowStats(false)}>
-                <View>
-                  <Ionicons name="close" size={24} color="#666" />
-                </View>
-              </TouchableWithoutFeedback>
+              <SilentButton onPress={() => setShowStats(false)}>
+                <Ionicons name="close" size={24} color="#666" />
+              </SilentButton>
             </View>
             <ScrollView>
               {Object.entries(todayStats).map(([key, value]) => (
@@ -321,11 +354,9 @@ export default function App() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>設定</Text>
-              <TouchableWithoutFeedback onPress={() => setShowSettings(false)}>
-                <View>
-                  <Ionicons name="close" size={24} color="#666" />
-                </View>
-              </TouchableWithoutFeedback>
+              <SilentButton onPress={() => setShowSettings(false)}>
+                <Ionicons name="close" size={24} color="#666" />
+              </SilentButton>
             </View>
             
             <View style={styles.settingRow}>
@@ -338,11 +369,12 @@ export default function App() {
               />
             </View>
             
-            <TouchableWithoutFeedback onPress={() => setShowSettings(false)}>
-              <View style={styles.confirmButton}>
-                <Text style={styles.confirmButtonText}>關閉</Text>
-              </View>
-            </TouchableWithoutFeedback>
+            <SilentButton 
+              onPress={() => setShowSettings(false)}
+              style={styles.confirmButton}
+            >
+              <Text style={styles.confirmButtonText}>關閉</Text>
+            </SilentButton>
           </View>
         </View>
       </Modal>
