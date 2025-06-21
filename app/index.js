@@ -67,9 +67,9 @@ export default function App() {
 
       const id = nextIdRef.current++;
       
-      // 計算頌缽正上方位置
+      // 計算送缽正上方位置
       const bowlCenterX = 200; // 螢幕中央 X 座標
-      const bowlTopY = 350; // 頌缽正上方 Y 座標
+      const bowlTopY = 350; // 送缽正上方 Y 座標
       
       setFloatingTexts(texts => [
         ...texts,
@@ -88,7 +88,7 @@ export default function App() {
   const handleAutoPlay = async () => {
     console.log('Auto play triggered');
     await playSound();
-    await handleIncrementStat(200, 350); // 使用頌缽正上方位置
+    await handleIncrementStat(200, 350); // 使用送缽正上方位置
   };
 
   // 初始化音頻和加載統計數據
