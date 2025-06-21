@@ -1,5 +1,4 @@
 import { StatusBar } from 'expo-status-bar';
-import * as SplashScreen from 'expo-splash-screen';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
@@ -23,9 +22,6 @@ const MESSAGES = [
 ];
 
 const COOLDOWN_TIME = 100; // 減少到 100ms 允許更快連擊
-
-// 防止自動隱藏splash screen
-SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [floatingTexts, setFloatingTexts] = useState([]);
@@ -111,12 +107,6 @@ export default function App() {
           playsInSilentModeIOS: true,
           shouldDuckAndroid: false,
           playThroughEarpieceAndroid: false,
-          // Android特定設定 - 提高音量
-          ...(Platform.OS === 'android' && {
-            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-            shouldDuckAndroid: false,
-            playThroughEarpieceAndroid: false,
-          }),
         });
 
         const { sound } = await Audio.Sound.createAsync(
@@ -128,13 +118,8 @@ export default function App() {
         );
         soundRef.current = sound;
         console.log('Audio initialized successfully');
-        
-        // 隱藏splash screen
-        await SplashScreen.hideAsync();
       } catch (error) {
         console.error('Audio initialization error:', error);
-        // 即使出錯也要隱藏splash screen
-        await SplashScreen.hideAsync();
       }
     };
 
@@ -277,17 +262,14 @@ export default function App() {
       </TouchableWithoutFeedback>
       
       {/* 缽圖像 */}
-      <TouchableOpacity
-        style={styles.bowlContainer}
-        onPress={handlePress}
-        activeOpacity={1}
-        android_disableSound={true}
-      >
-        <Image 
-          source={require('../assets/bowl.png')} 
-          style={styles.bowlImage} 
-        />
-      </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={handlePress}>
+        <View style={styles.bowlContainer}>
+          <Image 
+            source={require('../assets/bowl.png')} 
+            style={styles.bowlImage} 
+          />
+        </View>
+      </TouchableWithoutFeedback>
 
       {/* 浮動文字 */}
       {floatingTexts.map(({ id, message, startPosition }) => (
