@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
@@ -9,7 +10,9 @@ import {
   Animated,
   Modal,
   ScrollView,
-  Switch
+  Switch,
+  Platform,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
@@ -20,6 +23,9 @@ const MESSAGES = [
 ];
 
 const COOLDOWN_TIME = 100; // 減少到 100ms 允許更快連擊
+
+// 防止自動隱藏splash screen
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [floatingTexts, setFloatingTexts] = useState([]);
@@ -39,8 +45,12 @@ export default function App() {
         // 創建新的音頻實例以支持重疊播放
         const { sound } = await Audio.Sound.createAsync(
           require('../assets/bowl-sound.mp3'),
-          { shouldPlay: true }
+          { 
+            shouldPlay: true,
+            volume: 1.0
+          }
         );
+        
         // 播放完成後釋放資源
         sound.setOnPlaybackStatusUpdate((status) => {
           if (status.didJustFinish) {
@@ -101,16 +111,30 @@ export default function App() {
           playsInSilentModeIOS: true,
           shouldDuckAndroid: false,
           playThroughEarpieceAndroid: false,
+          // Android特定設定 - 提高音量
+          ...(Platform.OS === 'android' && {
+            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+            shouldDuckAndroid: false,
+            playThroughEarpieceAndroid: false,
+          }),
         });
 
         const { sound } = await Audio.Sound.createAsync(
           require('../assets/bowl-sound.mp3'),
-          { shouldPlay: false }
+          { 
+            shouldPlay: false,
+            volume: 1.0
+          }
         );
         soundRef.current = sound;
         console.log('Audio initialized successfully');
+        
+        // 隱藏splash screen
+        await SplashScreen.hideAsync();
       } catch (error) {
         console.error('Audio initialization error:', error);
+        // 即使出錯也要隱藏splash screen
+        await SplashScreen.hideAsync();
       }
     };
 
@@ -239,25 +263,25 @@ export default function App() {
       <Text style={styles.title}>每日靜心</Text>
       
       {/* 設定按鈕 */}
-      <TouchableOpacity
-        style={styles.settingsButton}
-        onPress={() => setShowSettings(true)}
-      >
-        <Ionicons name="settings-outline" size={24} color="#D4AF37" />
-      </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setShowSettings(true)}>
+        <View style={styles.settingsButton}>
+          <Ionicons name="settings-outline" size={24} color="#D4AF37" />
+        </View>
+      </TouchableWithoutFeedback>
       
       {/* 統計按鈕 */}
-      <TouchableOpacity
-        style={styles.statsButton}
-        onPress={() => setShowStats(true)}
-      >
-        <Ionicons name="stats-chart" size={24} color="#D4AF37" />
-      </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={() => setShowStats(true)}>
+        <View style={styles.statsButton}>
+          <Ionicons name="stats-chart" size={24} color="#D4AF37" />
+        </View>
+      </TouchableWithoutFeedback>
       
       {/* 缽圖像 */}
       <TouchableOpacity
         style={styles.bowlContainer}
         onPress={handlePress}
+        activeOpacity={1}
+        android_disableSound={true}
       >
         <Image 
           source={require('../assets/bowl.png')} 
@@ -286,9 +310,11 @@ export default function App() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>今日修行</Text>
-              <TouchableOpacity onPress={() => setShowStats(false)}>
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
+              <TouchableWithoutFeedback onPress={() => setShowStats(false)}>
+                <View>
+                  <Ionicons name="close" size={24} color="#666" />
+                </View>
+              </TouchableWithoutFeedback>
             </View>
             <ScrollView>
               {Object.entries(todayStats).map(([key, value]) => (
@@ -313,9 +339,11 @@ export default function App() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>設定</Text>
-              <TouchableOpacity onPress={() => setShowSettings(false)}>
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
+              <TouchableWithoutFeedback onPress={() => setShowSettings(false)}>
+                <View>
+                  <Ionicons name="close" size={24} color="#666" />
+                </View>
+              </TouchableWithoutFeedback>
             </View>
             
             <View style={styles.settingRow}>
@@ -328,12 +356,11 @@ export default function App() {
               />
             </View>
             
-            <TouchableOpacity
-              onPress={() => setShowSettings(false)}
-              style={styles.confirmButton}
-            >
-              <Text style={styles.confirmButtonText}>關閉</Text>
-            </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={() => setShowSettings(false)}>
+              <View style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>關閉</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
         </View>
       </Modal>
