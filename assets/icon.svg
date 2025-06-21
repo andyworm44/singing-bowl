@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <radialGradient id="bgGradient" cx="0.5" cy="0.3" r="0.8">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2E5BBA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A1D29;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="bowlGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#FF8C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowGradient" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <circle cx="512" cy="512" r="512" fill="url(#bgGradient)"/>
+  
+  <!-- Glow effect -->
+  <circle cx="512" cy="512" r="300" fill="url(#glowGradient)"/>
+  
+  <!-- Singing Bowl -->
+  <!-- Bowl base -->
+  <ellipse cx="512" cy="620" rx="200" ry="60" fill="url(#bowlGradient)" opacity="0.8"/>
+  
+  <!-- Bowl sides -->
+  <path d="M 312 620 Q 312 500 512 480 Q 712 500 712 620" 
+        fill="none" 
+        stroke="url(#bowlGradient)" 
+        stroke-width="8" 
+        opacity="0.9"/>
+  
+  <!-- Bowl rim -->
+  <ellipse cx="512" cy="480" rx="200" ry="20" fill="url(#bowlGradient)"/>
+  
+  <!-- Bowl inner shadow -->
+  <path d="M 330 610 Q 330 520 512 500 Q 694 520 694 610" 
+        fill="none" 
+        stroke="#B8860B" 
+        stroke-width="3" 
+        opacity="0.6"/>
+  
+  <!-- Meditation symbols -->
+  <!-- Om symbol simplified -->
+  <g transform="translate(512, 350) scale(0.8)">
+    <path d="M -30 -20 Q -10 -40 10 -20 Q 30 0 10 20 Q -10 40 -30 20 Q -50 0 -30 -20 Z" 
+          fill="#FFD700" 
+          opacity="0.7"/>
+    <circle cx="20" cy="0" r="8" fill="#FFD700" opacity="0.7"/>
+    <path d="M -20 30 Q 0 35 20 30" 
+          stroke="#FFD700" 
+          stroke-width="3" 
+          fill="none" 
+          opacity="0.7"/>
+  </g>
+  
+  <!-- Sound waves -->
+  <g opacity="0.4">
+    <circle cx="512" cy="480" r="220" fill="none" stroke="#FFD700" stroke-width="2"/>
+    <circle cx="512" cy="480" r="250" fill="none" stroke="#FFD700" stroke-width="1.5"/>
+    <circle cx="512" cy="480" r="280" fill="none" stroke="#FFD700" stroke-width="1"/>
+  </g>
+  
+  <!-- Sparkle effects -->
+  <g opacity="0.6">
+    <circle cx="400" cy="300" r="3" fill="#FFD700"/>
+    <circle cx="624" cy="320" r="2" fill="#FFA500"/>
+    <circle cx="350" cy="400" r="2" fill="#FFD700"/>
+    <circle cx="674" cy="380" r="3" fill="#FFA500"/>
+    <circle cx="420" cy="700" r="2" fill="#FFD700"/>
+    <circle cx="604" cy="720" r="3" fill="#FFA500"/>
+  </g>
+  
+  <!-- Bottom text space for app name -->
+  <text x="512" y="850" text-anchor="middle" 
+        font-family="Arial, sans-serif" 
+        font-size="36" 
+        font-weight="bold" 
+        fill="#FFD700" 
+        opacity="0.8">
+    颂钵冥想
+  </text>
+</svg> 
